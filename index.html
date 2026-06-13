@@ -308,29 +308,34 @@ textarea{resize:vertical;min-height:58px}
     <h2><span class="n">21</span> Segurança</h2>
     <div class="q"><label class="q-l">Você tem ou teve pensamentos de que seria melhor não estar vivo, de desaparecer ou de se machucar?</label>
       <div class="opts">
-        <label class="opt"><input type="radio" name="risco_ideacao" value="Não" onchange="condRisco()"> Não</label>
-        <label class="opt"><input type="radio" name="risco_ideacao" value="No passado" onchange="condRisco()"> Já tive, no passado</label>
-        <label class="opt"><input type="radio" name="risco_ideacao" value="Às vezes atualmente" onchange="condRisco()"> Às vezes, atualmente</label>
-        <label class="opt"><input type="radio" name="risco_ideacao" value="Com frequência" onchange="condRisco()"> Com frequência</label>
-        <label class="opt"><input type="radio" name="risco_ideacao" value="Prefiro conversar na consulta" onchange="condRisco()"> Prefiro conversar na consulta</label>
+        <label class="opt"><input type="radio" name="risco_ideacao" value="Sim, atualmente" onchange="condRisco()"> Sim, atualmente</label>
+        <label class="opt"><input type="radio" name="risco_ideacao" value="Sim, no passado" onchange="condRisco()"> Sim, no passado</label>
+        <label class="opt"><input type="radio" name="risco_ideacao" value="Às vezes" onchange="condRisco()"> Às vezes</label>
+        <label class="opt"><input type="radio" name="risco_ideacao" value="Nunca" onchange="condRisco()"> Nunca</label>
       </div>
     </div>
-    <div class="q"><label class="q-l">Chegou a se machucar de propósito, planejar ou tentar?</label>
-      <div class="opts row">
-        <label class="opt"><input type="radio" name="risco_plano" value="Não" onchange="condRisco()"> Não</label>
-        <label class="opt"><input type="radio" name="risco_plano" value="Sim" onchange="condRisco()"> Sim</label>
-        <label class="opt"><input type="radio" name="risco_plano" value="Prefiro conversar na consulta" onchange="condRisco()"> Prefiro conversar na consulta</label>
-      </div>
-    </div>
+
+    <!-- SÓ aparece se passado -->
     <div class="q" id="risco_passado_wrap" style="display:none;border:none">
-      <label class="q-l">Se quiser, conte um pouco sobre o que aconteceu no passado. (opcional)</label>
+      <label class="q-l">Se quiser, conte um pouco sobre o que aconteceu. (opcional)</label>
       <textarea name="risco_passado" placeholder="Quando foi? O que aconteceu? Como você está hoje em relação a isso?"></textarea>
     </div>
-    <div class="q" id="risco_desc_wrap" style="display:none;border:none">
-      <label class="q-l">Se se sentir confortável, conte um pouco mais (não é obrigatório).</label>
-      <textarea name="risco_desc" placeholder="Como? Quando? Com que intensidade?"></textarea>
+
+    <!-- SÓ aparece se presente ou às vezes -->
+    <div id="risco_presente_wrap" style="display:none">
+      <div class="q"><label class="q-l">Chegou a se machucar de propósito, planejar ou tentar?</label>
+        <div class="opts row">
+          <label class="opt"><input type="radio" name="risco_plano" value="Não" onchange="condRisco()"> Não</label>
+          <label class="opt"><input type="radio" name="risco_plano" value="Sim" onchange="condRisco()"> Sim</label>
+          <label class="opt"><input type="radio" name="risco_plano" value="Prefiro conversar na consulta" onchange="condRisco()"> Prefiro conversar na consulta</label>
+        </div>
+      </div>
+      <div class="q" style="border:none">
+        <label class="q-l">Se se sentir confortável, conte um pouco mais. (opcional)</label>
+        <textarea name="risco_desc" placeholder="Como? Quando? Com que intensidade?"></textarea>
+      </div>
+      <div class="alerta">⚠️ Em caso de risco imediato, não aguarde a consulta. Procure uma UPA ou pronto-socorro e fique acompanhado. CVV: 188 (24h, gratuito).</div>
     </div>
-    <div class="alerta" id="risco_alerta" style="display:none">⚠️ Em caso de risco imediato, não aguarde a consulta. Procure uma UPA ou pronto-socorro e fique acompanhado. CVV: 188 (24h, gratuito).</div>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -648,20 +653,22 @@ function condGenero(){
 }
 function condRisco(){
   const ideacao=document.querySelector('input[name="risco_ideacao"]:checked');
-  const plano=document.querySelector('input[name="risco_plano"]:checked');
-  const valIdeacao=ideacao?ideacao.value:'';
-  const valPlano=plano?plano.value:'';
+  const val=ideacao?ideacao.value:'';
 
-  const ePassado=/passado/i.test(valIdeacao)&&!/atualmente|frequência/i.test(valIdeacao);
-  const ePresente=/atualmente|frequência/i.test(valIdeacao);
-  const temPlano=/Sim/i.test(valPlano);
+  const ePassado=val==='Sim, no passado';
+  const ePresente=val==='Sim, atualmente'||val==='Às vezes';
+  const eNunca=val==='Nunca';
 
-  // campo de narrativa passado
   document.getElementById('risco_passado_wrap').style.display=ePassado?'block':'none';
-  // campo de detalhe presente / plano
-  document.getElementById('risco_desc_wrap').style.display=(ePresente||temPlano)?'block':'none';
-  // alerta de risco só aparece se presente ou plano
-  document.getElementById('risco_alerta').style.display=(ePresente||temPlano)?'block':'none';
+  document.getElementById('risco_presente_wrap').style.display=ePresente?'block':'none';
+
+  // limpa campos do bloco que ficou oculto
+  if(!ePassado){const t=document.querySelector('[name="risco_passado"]');if(t)t.value='';}
+  if(!ePresente){
+    document.querySelectorAll('[name="risco_plano"]').forEach(r=>r.checked=false);
+    document.querySelectorAll('[name="risco_plano"]').forEach(r=>r.closest('.opt').classList.remove('checked'));
+    const t=document.querySelector('[name="risco_desc"]');if(t)t.value='';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -776,9 +783,9 @@ function pontuar(d){
 
 function flagRisco(d){
   const r=[];
-  if(/frequência/i.test(d.risco_ideacao||''))r.push('IDEAÇÃO FREQUENTE');
-  else if(/atualmente/i.test(d.risco_ideacao||''))r.push('IDEAÇÃO ATUAL');
-  else if(/passado/i.test(d.risco_ideacao||''))r.push('IDEAÇÃO PRÉVIA (passado)');
+  if(d.risco_ideacao==='Sim, atualmente')r.push('IDEAÇÃO ATUAL');
+  else if(d.risco_ideacao==='Às vezes')r.push('IDEAÇÃO OCASIONAL');
+  else if(d.risco_ideacao==='Sim, no passado')r.push('IDEAÇÃO PRÉVIA');
   if(d.risco_plano==='Sim')r.push('PLANO/TENTATIVA');
   return r.length?' [⚠ '+r.join(' · ')+']':'';
 }
