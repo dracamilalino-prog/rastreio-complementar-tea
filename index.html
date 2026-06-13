@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionário Complementar · Dra. Camila Lino</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--lilas:#EBADFF;--roxo:#6B3FA0;--roxo2:#4B1A6E;--cream:#FBF7FF;--text:#2A1840;--muted:#8B7BA0;--border:#E6D9F2;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--text);line-height:1.5;padding-bottom:40px}
+.head{background:linear-gradient(135deg,var(--roxo2),var(--roxo));color:#fff;padding:24px 20px;text-align:center}
+.head .logo{width:50px;height:50px;border-radius:50%;border:2px solid var(--lilas);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:18px;font-weight:bold;color:var(--lilas);font-style:italic}
+.head h1{font-size:1.15rem;font-weight:600}
+.head .sub{font-size:.76rem;opacity:.85;margin-top:4px;letter-spacing:1px}
+.wrap{max-width:680px;margin:0 auto;padding:18px 14px}
+.intro{background:#fff;border:1px solid var(--border);border-radius:12px;padding:15px;font-size:.88rem;color:var(--muted);margin-bottom:16px}
+.prog{position:sticky;top:0;z-index:10;height:5px;background:var(--border);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--roxo),var(--lilas));transition:width .3s}
+.sec{background:#fff;border:1px solid var(--border);border-radius:14px;padding:17px;margin-bottom:14px}
+.sec h2{font-size:.76rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--roxo);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.sec h2 .n{background:var(--lilas);color:var(--roxo2);width:23px;height:23px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0}
+.sec .ajuda{font-size:.82rem;color:var(--muted);margin-bottom:12px}
+.q{margin-bottom:6px;padding:11px 0;border-bottom:1px solid rgba(107,63,160,.06)}
+.q:last-child{border-bottom:none}
+.q-l{display:block;font-size:.92rem;font-weight:500;margin-bottom:9px}
+input[type=text],input[type=date],input[type=email],textarea,select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:.95rem;font-family:inherit;color:var(--text);background:var(--cream)}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--roxo)}
+textarea{resize:vertical;min-height:58px}
+.lik{display:flex;gap:6px;flex-wrap:wrap}
+.lik label{flex:1;min-width:62px;text-align:center;border:1.5px solid var(--border);border-radius:9px;padding:8px 4px;cursor:pointer;font-size:.78rem;background:var(--cream);user-select:none}
+.lik label:hover{border-color:var(--lilas)}
+.lik label.checked{border-color:var(--roxo);background:#F6EDFF;font-weight:600;color:var(--roxo)}
+.lik input{display:none}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opts.row{flex-direction:row;flex-wrap:wrap}
+.opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:.88rem;background:var(--cream)}
+.opt:hover{border-color:var(--lilas)}
+.opt input{width:auto;margin:0;accent-color:var(--roxo)}
+.opt.checked{border-color:var(--roxo);background:#F6EDFF}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.risco{border:2px solid #E5A0A0;background:#FFF5F5}
+.risco h2{color:#B03A3A}.risco h2 .n{background:#E5A0A0;color:#7A1F1F}
+.alerta{background:#FFE8E8;border:1px solid #E5A0A0;border-radius:9px;padding:11px;font-size:.83rem;color:#8A2020;margin-top:11px;font-weight:500}
+.btn{width:100%;padding:15px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--roxo),var(--roxo2));color:#fff;font-size:1.02rem;font-weight:600;cursor:pointer;margin-top:6px;font-family:inherit}
+.btn:disabled{opacity:.6}
+.status{text-align:center;margin-top:13px;font-size:.92rem;font-weight:500;min-height:22px}
+.foot{text-align:center;font-size:.72rem;color:var(--muted);margin-top:18px;line-height:1.6}
+.leg{font-size:.74rem;color:var(--muted);text-align:right;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="head">
+  <div class="logo">CL</div>
+  <h1>Questionário Complementar</h1>
+  <div class="sub">DRA. CAMILA LINO · MÉDICA · CRM-SP 274280</div>
+</div>
+
+<div class="wrap">
+  <div class="intro">
+    Este questionário complementa sua avaliação. Não existe resposta certa ou errada — responda pensando em como as coisas <b>realmente são para você</b> na maior parte do tempo, ao longo da vida. Leva cerca de 8 minutos e pode ser pausado: suas respostas ficam salvas neste aparelho até você enviar.
+  </div>
+  <div class="prog"><i id="prog"></i></div>
+
+  <form id="form">
+
+  <!-- IDENTIFICAÇÃO -->
+  <div class="sec">
+    <h2><span class="n">1</span> Identificação</h2>
+    <div class="q"><label class="q-l">Nome completo</label><input type="text" name="nome" required></div>
+    <div class="grid2">
+      <div class="q" style="border:none;padding-top:0"><label class="q-l">Data de nascimento</label><input type="date" name="nascimento"></div>
+      <div class="q" style="border:none;padding-top:0"><label class="q-l">Idade</label><input type="text" name="idade" placeholder="anos"></div>
+    </div>
+    <div class="q"><label class="q-l">Seu e-mail (se quiser uma cópia das respostas)</label><input type="email" name="email_paciente" placeholder="seunome@email.com"></div>
+    <div class="q"><label class="q-l">Já tem diagnóstico ou hipótese de autismo (TEA)?</label>
+      <div class="opts row">
+        <label class="opt"><input type="radio" name="dx_tea" value="Sim, diagnóstico fechado" onchange="condDxTea()"> Diagnóstico fechado</label>
+        <label class="opt"><input type="radio" name="dx_tea" value="Hipótese / em investigação" onchange="condDxTea()"> Em investigação</label>
+        <label class="opt"><input type="radio" name="dx_tea" value="Autoidentificação" onchange="condDxTea()"> Me identifico</label>
+      </div>
+      <textarea name="dx_tea_obs" id="dx_tea_obs" placeholder="O que te faz se identificar com o autismo? (o que você percebe em você)" style="margin-top:8px;display:none"></textarea>
+    </div>
+  </div>
+
+  <!-- ESCALA: como funciona -->
+  <div class="sec">
+    <div class="ajuda" style="margin-bottom:0">Nas próximas seções, para cada frase escolha o quanto ela combina com você: <b>Nunca · Às vezes · Frequente · Sempre</b>. Pense em como é para você ao longo da vida, não só agora.</div>
+  </div>
+
+  <!-- D1 ATENÇÃO E EXECUTIVO (TDAH) -->
+  <div class="sec" data-dom="tdah">
+    <h2><span class="n">2</span> Atenção e organização</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d1"></div>
+  </div>
+
+  <!-- D2 ANSIEDADE (TAG / social) -->
+  <div class="sec" data-dom="ansiedade">
+    <h2><span class="n">3</span> Preocupações e tensão</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d2"></div>
+  </div>
+
+  <!-- D3 REPETIÇÃO / RITUAIS (TOC x estereotipia) -->
+  <div class="sec" data-dom="toc">
+    <h2><span class="n">4</span> Repetições e rotinas</h2>
+    <div class="ajuda">Aqui interessa diferenciar o que é prazer/conforto do que é incômodo.</div>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d3"></div>
+    <div class="q"><label class="q-l">Quando você repete algo (conferir, organizar, contar, alinhar), isso costuma ser:</label>
+      <div class="opts row">
+        <label class="opt"><input type="radio" name="toc_natureza" value="Conforto/prazer (me acalma, gosto)"> Conforto / prazer</label>
+        <label class="opt"><input type="radio" name="toc_natureza" value="Alívio de angústia (preciso, senão fico mal)"> Alívio de angústia</label>
+        <label class="opt"><input type="radio" name="toc_natureza" value="Os dois"> Os dois</label>
+        <label class="opt"><input type="radio" name="toc_natureza" value="Não se aplica"> Não se aplica</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- D4 HUMOR / DEPRESSÃO -->
+  <div class="sec" data-dom="humor">
+    <h2><span class="n">5</span> Ânimo e energia</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d4"></div>
+  </div>
+
+  <!-- D5 OSCILAÇÃO / BIPOLAR -->
+  <div class="sec" data-dom="bipolar">
+    <h2><span class="n">6</span> Variações ao longo do tempo</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d5"></div>
+  </div>
+
+  <!-- D6 REGULAÇÃO EMOCIONAL -->
+  <div class="sec" data-dom="regulacao">
+    <h2><span class="n">7</span> Emoções e relações</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d6"></div>
+  </div>
+
+  <!-- D7 SENSORIAL / ALIMENTAR -->
+  <div class="sec" data-dom="sensorial">
+    <h2><span class="n">8</span> Sentidos e alimentação</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d7"></div>
+  </div>
+
+  <!-- D8 ALEXITIMIA / INTEROCEPÇÃO -->
+  <div class="sec" data-dom="alexitimia">
+    <h2><span class="n">9</span> Reconhecer o que sente</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d8"></div>
+  </div>
+
+  <!-- D9 DEMANDA / PDA -->
+  <div class="sec" data-dom="pda">
+    <h2><span class="n">10</span> Diante do que pedem de você</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d9"></div>
+  </div>
+
+  <!-- D10 MOTOR / TIQUES / CATATONIA -->
+  <div class="sec" data-dom="motor">
+    <h2><span class="n">11</span> Corpo e movimento</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d10"></div>
+  </div>
+
+  <!-- D11 CATATONIA (específico) -->
+  <div class="sec" data-dom="catatonia">
+    <h2><span class="n">12</span> Travamentos e iniciativa</h2>
+    <div class="ajuda">Sobre momentos em que o corpo ou a ação "trava".</div>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d12"></div>
+  </div>
+
+  <!-- D12 TRAUMA / TEPT -->
+  <div class="sec" data-dom="trauma">
+    <h2><span class="n">13</span> Experiências marcantes</h2>
+    <div class="ajuda">Algumas pessoas passam por situações difíceis ou assustadoras ao longo da vida. Responda apenas o que se sentir confortável.</div>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d13"></div>
+    <div class="q" style="border:none"><label class="q-l">Se quiser, este é um espaço seguro para escrever sobre algo que você viveu e que considera importante eu saber. Fique à vontade — só o que você quiser compartilhar. (opcional)</label><textarea name="trauma_livre" style="min-height:80px"></textarea></div>
+  </div>
+
+  <!-- D13 GÊNERO / DISFORIA -->
+  <div class="sec" data-dom="genero">
+    <h2><span class="n">14</span> Identidade</h2>
+    <div class="ajuda">Sobre como você se sente em relação ao próprio gênero e corpo. Não há resposta certa — responda apenas o que quiser.</div>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d14"></div>
+  </div>
+
+  <!-- D14 ALTAS HABILIDADES / 2e -->
+  <div class="sec" data-dom="ah">
+    <h2><span class="n">15</span> Aprendizado e raciocínio</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d15"></div>
+  </div>
+
+  <!-- SONO -->
+  <div class="sec" data-dom="sono">
+    <h2><span class="n">16</span> Sono</h2>
+    <div class="leg">N · Àv · Fr · Se</div>
+    <div id="d11"></div>
+  </div>
+
+  <!-- SEGURANÇA -->
+  <div class="sec risco">
+    <h2><span class="n">17</span> Segurança</h2>
+    <div class="q"><label class="q-l">Você tem ou teve pensamentos de que seria melhor não estar vivo, de desaparecer ou de se machucar?</label>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="risco_ideacao" value="Não" onchange="condRisco()"> Não</label>
+        <label class="opt"><input type="radio" name="risco_ideacao" value="No passado" onchange="condRisco()"> Já tive, no passado</label>
+        <label class="opt"><input type="radio" name="risco_ideacao" value="Às vezes atualmente" onchange="condRisco()"> Às vezes, atualmente</label>
+        <label class="opt"><input type="radio" name="risco_ideacao" value="Com frequência" onchange="condRisco()"> Com frequência</label>
+        <label class="opt"><input type="radio" name="risco_ideacao" value="Prefiro conversar na consulta" onchange="condRisco()"> Prefiro conversar na consulta</label>
+      </div>
+    </div>
+    <div class="q"><label class="q-l">Chegou a se machucar de propósito, planejar ou tentar?</label>
+      <div class="opts row">
+        <label class="opt"><input type="radio" name="risco_plano" value="Não" onchange="condRisco()"> Não</label>
+        <label class="opt"><input type="radio" name="risco_plano" value="Sim" onchange="condRisco()"> Sim</label>
+        <label class="opt"><input type="radio" name="risco_plano" value="Prefiro conversar na consulta" onchange="condRisco()"> Prefiro conversar na consulta</label>
+      </div>
+    </div>
+    <div class="q" id="risco_desc_wrap" style="display:none;border:none">
+      <label class="q-l">Se se sentir confortável, conte um pouco mais (não é obrigatório).</label>
+      <textarea name="risco_desc" placeholder="Como? Quando? Com que intensidade?"></textarea>
+    </div>
+    <div class="alerta">⚠️ Em caso de risco imediato, não aguarde a consulta. Procure uma UPA ou pronto-socorro e fique acompanhado. CVV: 188 (24h, gratuito).</div>
+  </div>
+
+  <!-- FECHAMENTO -->
+  <div class="sec">
+    <h2><span class="n">18</span> Para fechar</h2>
+    <div class="q"><label class="q-l">O que mais te causa sofrimento ou atrapalha seu dia a dia hoje? (com suas palavras)</label><textarea name="sofrimento"></textarea></div>
+    <div class="q"><label class="q-l">Há quanto tempo você sente isso?</label>
+      <div class="opts row">
+        <label class="opt"><input type="radio" name="cronologia" value="Desde a infância"> Desde a infância</label>
+        <label class="opt"><input type="radio" name="cronologia" value="Desde a adolescência"> Desde a adolescência</label>
+        <label class="opt"><input type="radio" name="cronologia" value="Na vida adulta"> Começou na vida adulta</label>
+        <label class="opt"><input type="radio" name="cronologia" value="Vai e volta"> Vai e volta em fases</label>
+      </div>
+    </div>
+    <div class="q"><label class="q-l">Já tomou ou toma alguma medicação psiquiátrica? Qual ajudou ou atrapalhou?</label><textarea name="medicacoes"></textarea></div>
+    <div class="q"><label class="q-l">Algo importante que não foi perguntado e você quer registrar? (opcional)</label><textarea name="extra"></textarea></div>
+  </div>
+
+  <button type="button" class="btn" id="btn" onclick="enviar()">Enviar respostas para a Dra. Camila</button>
+  <div class="status" id="status"></div>
+  </form>
+
+  <div class="foot">
+    Documento de uso clínico · Dra. Camila Lino · Médica · CRM-SP 274280<br>
+    Suas respostas são confidenciais e enviadas diretamente à sua médica.
+  </div>
+</div>
+
+<script>
+// ===== CONFIG: cole a URL do Apps Script (termina em /exec) =====
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9YTTtRkVEHTfX2B3Tl3cz1sbz8X2Q3U_CfhWa_tKSDB3wxFqehqBE640NC9RK7DyU/exec';
+// ================================================================
+
+// itens por domínio: [id, texto]
+const ITENS={
+  d1:[ // TDAH / executivo
+    ['tdah_1','Começo várias coisas e deixo muitas pela metade'],
+    ['tdah_2','Perco o foco facilmente ou me distraio com qualquer coisa'],
+    ['tdah_3','Tenho dificuldade de organizar tarefas e administrar o tempo'],
+    ['tdah_4','Procrastino mesmo coisas que quero fazer; só rendo na pressão do prazo'],
+    ['tdah_5','Esqueço compromissos, perco objetos, me atraso'],
+    ['tdah_6','Minha cabeça é agitada, com muitos pensamentos ao mesmo tempo'],
+    ['tdah_7','Quando algo me interessa muito, hiperfoco e perco a noção do tempo']
+  ],
+  d2:[ // ansiedade TAG
+    ['anx_1','Me preocupo demais com coisas, mesmo sabendo que é exagero'],
+    ['anx_2','Fico tenso, no limite, com a mente sem desligar'],
+    ['anx_3','Antecipo o pior e crio cenários ruins na cabeça'],
+    ['anx_4','Sinto sintomas físicos de ansiedade (coração, respiração, estômago, músculos)'],
+    ['anx_5','Tenho crises súbitas de muito medo ou mal-estar'],
+    ['anx_6','Evito situações sociais por medo de julgamento (além do cansaço social do autismo)']
+  ],
+  d3:[ // TOC x estereotipia
+    ['toc_1','Tenho pensamentos repetitivos indesejados que me incomodam ou assustam'],
+    ['toc_2','Sinto necessidade de conferir, lavar, contar, organizar ou repetir para aliviar angústia'],
+    ['toc_3','Se não faço do meu jeito ou na ordem certa, fico muito mal'],
+    ['toc_4','Tenho regras ou rituais que sinto que "tenho" que cumprir'],
+    ['toc_5','Penso que algo ruim pode acontecer se eu não fizer certas coisas']
+  ],
+  d4:[ // depressão
+    ['dep_1','Me sinto triste, vazio ou sem esperança boa parte do tempo'],
+    ['dep_2','Perdi o interesse ou o prazer em coisas que gostava'],
+    ['dep_3','Me sinto cansado, sem energia, tudo custa muito'],
+    ['dep_4','Me critico demais, sinto culpa ou que não tenho valor'],
+    ['dep_5','Está difícil pensar, concentrar ou tomar decisões'],
+    ['dep_6','Chego ao esgotamento depois de me esforçar para parecer "normal"']
+  ],
+  d5:[ // bipolar
+    ['bip_1','Tenho fases de energia muito acima do normal, sem precisar dormir'],
+    ['bip_2','Em certos períodos fico acelerado, falante, com mil ideias e projetos'],
+    ['bip_3','Tenho fases de gastos, impulsos ou decisões fora do meu normal'],
+    ['bip_4','Meu humor muda em blocos (dias/semanas), não só no mesmo dia'],
+    ['bip_5','Outras pessoas já notaram que eu estava "diferente", eufórico ou acelerado']
+  ],
+  d6:[ // regulação emocional / borderline
+    ['reg_1','Minhas emoções são muito intensas e mudam rápido (em horas)'],
+    ['reg_2','Tenho dificuldade de me acalmar depois que algo me abala'],
+    ['reg_3','O medo de ser rejeitado ou abandonado me afeta muito'],
+    ['reg_4','Tenho explosões de raiva ou choro que depois me arrependo'],
+    ['reg_5','Às vezes não sei bem quem eu sou ou o que quero da vida']
+  ],
+  d7:[ // sensorial / ARFID
+    ['sen_1','Sons, luzes, texturas, cheiros ou toques me incomodam muito'],
+    ['sen_2','Busco certos estímulos (pressão, movimento, sons) para me regular'],
+    ['sen_3','Evito muitos alimentos por textura, cheiro, cor ou temperatura'],
+    ['sen_4','Minha alimentação é bem restrita ou seletiva'],
+    ['sen_5','Roupas, etiquetas ou certos tecidos me incomodam a ponto de atrapalhar']
+  ],
+  d8:[ // alexitimia / interocepção
+    ['ale_1','Tenho dificuldade de identificar e nomear o que estou sentindo'],
+    ['ale_2','Custo a perceber sinais do corpo (fome, sede, cansaço, vontade de ir ao banheiro)'],
+    ['ale_3','As pessoas dizem que eu pareço "sem emoção" quando na verdade sinto muito'],
+    ['ale_4','Demoro a perceber que estou estressado até "explodir" ou desligar']
+  ],
+  d9:[ // PDA
+    ['pda_1','Quando me pedem ou exigem algo, sinto uma resistência forte, mesmo querendo fazer'],
+    ['pda_2','Regras e obrigações me dão uma sensação de aprisionamento ou pânico'],
+    ['pda_3','Uso desculpas, distração ou negociação para escapar de demandas'],
+    ['pda_4','Tenho mais facilidade quando a ideia parte de mim, no meu tempo']
+  ],
+  d10:[ // motor / tiques / catatonia
+    ['mot_1','Tenho movimentos ou sons repetitivos que faço sem querer (tiques)'],
+    ['mot_2','Faço movimentos repetitivos que me acalmam (balançar, mexer as mãos)'],
+    ['mot_3','Em momentos de sobrecarga, travo, fico lento ou não consigo me mover/falar'],
+    ['mot_4','Já tive períodos de ficar muito parado, mudo ou "desligado"']
+  ],
+  d11:[ // sono
+    ['son_1','Tenho dificuldade para pegar no sono ou minha mente não desliga'],
+    ['son_2','Meu sono é irregular, durmo e acordo em horários muito variados'],
+    ['son_3','Acordo cansado mesmo dormindo'],
+    ['son_4','Meu relógio biológico é atrasado (só durmo de madrugada)']
+  ],
+  d12:[ // catatonia
+    ['cat_1','Em momentos de sobrecarga, meu corpo trava e não consigo me mover ou falar'],
+    ['cat_2','Fico preso em uma posição ou ação, sem conseguir começar ou parar'],
+    ['cat_3','Preciso que alguém me "dê a partida" (fale, toque) para eu conseguir agir'],
+    ['cat_4','Tenho períodos de lentidão extrema, mutismo ou de ficar "desligado"'],
+    ['cat_5','Repito palavras ou movimentos do outro sem querer, ou obedeço automaticamente']
+  ],
+  d13:[ // trauma / TEPT
+    ['tra_1','Passei por situações muito difíceis, assustadoras ou de abuso na vida'],
+    ['tra_2','Tenho lembranças, imagens ou pesadelos que voltam sem eu querer'],
+    ['tra_3','Evito lugares, pessoas ou assuntos que lembram coisas ruins do passado'],
+    ['tra_4','Fico em estado de alerta, assustado ou tenso como se algo ruim fosse acontecer'],
+    ['tra_5','Sinto que partes de mim ou da realidade ficam "distantes" ou irreais às vezes']
+  ],
+  d14:[ // gênero / disforia
+    ['gen_1','Sinto desconforto com meu corpo ou com o gênero que me atribuíram'],
+    ['gen_2','Eu me sinto mais confortável sendo visto de um jeito diferente do que esperam de mim'],
+    ['gen_3','Penso sobre minha identidade de gênero de forma que me causa angústia'],
+    ['gen_4','Sinto que as caixas de "masculino" e "feminino" não me representam bem']
+  ],
+  d15:[ // altas habilidades / 2e
+    ['ah_1','Aprendo certas coisas com muita facilidade e rapidez, bem mais rápido que a maioria'],
+    ['ah_2','Tenho um ou mais assuntos em que sei muito mais que as pessoas ao redor'],
+    ['ah_3','Minha mente faz conexões e associações que os outros não costumam fazer'],
+    ['ah_4','Penso de forma muito intensa, profunda ou complexa sobre as coisas'],
+    ['ah_5','Tenho facilidade marcante com PALAVRAS, leitura, escrita ou idiomas'],
+    ['ah_6','Tenho facilidade marcante com ARTES, música, desenho, criatividade ou estética'],
+    ['ah_7','Tenho facilidade marcante com LÓGICA, raciocínio, tecnologia ou resolução de problemas'],
+    ['ah_8','Sou perfeccionista e me cobro demais, com medo de errar ou frustração quando algo sai imperfeito'],
+    ['ah_9','Me sinto deslocado, "de outro planeta", ou entediado quando as coisas são fáceis ou lentas demais'],
+    ['ah_10','Sou muito sensível e percebo injustiças, emoções ou detalhes que outros não notam'],
+    ['ah_11','Tenho talento numa área mas dificuldade real em outra (ex: ótimo em algo, mas trava em contas/matemática, organização ou coordenação)']
+  ]
+};
+
+const ESCALA=[['0','Nunca'],['1','Às vezes'],['2','Frequente'],['3','Sempre']];
+
+// follow-up: item id -> placeholder do campo que aparece se resposta > "Nunca"
+const FOLLOWUP={
+  anx_5:'Como são essas crises? (o que sente, em que situações, quanto duram)',
+  toc_1:'Quais pensamentos? (se sentir confortável)',
+  toc_4:'Quais regras/rituais? Eles atrapalham suas atividades do dia a dia?',
+  mot_1:'Quais tiques? Eles atrapalham suas atividades do dia a dia?',
+  ah_11:'Em que você se destaca? E em que você trava? (ex: ótimo em arte/escrita, mas difícil com cálculos)'
+};
+
+function montaItens(){
+  Object.keys(ITENS).forEach(dom=>{
+    const cont=document.getElementById(dom);
+    cont.innerHTML=ITENS[dom].map(it=>{
+      const opts=ESCALA.map(e=>`<label data-v="${e[0]}"><input type="radio" name="${it[0]}" value="${e[0]}">${e[1]}</label>`).join('');
+      const fu = FOLLOWUP[it[0]] ? `<input type="text" name="${it[0]}_fu" id="${it[0]}_fu" placeholder="${FOLLOWUP[it[0]]}" style="margin-top:8px;display:none">` : '';
+      return `<div class="q"><span class="q-l">${it[1]}</span><div class="lik">${opts}</div>${fu}</div>`;
+    }).join('');
+  });
+  // destaque visual likert + abre follow-up se resposta != Nunca
+  document.querySelectorAll('.lik input').forEach(inp=>{
+    inp.addEventListener('change',()=>{
+      document.querySelectorAll('input[name="'+inp.name+'"]').forEach(r=>r.closest('label').classList.toggle('checked',r.checked));
+      const fu=document.getElementById(inp.name+'_fu');
+      if(fu) fu.style.display = (parseInt(inp.value)>0) ? 'block' : 'none';
+    });
+  });
+}
+montaItens();
+
+const form=document.getElementById('form');
+document.querySelectorAll('.opt input').forEach(inp=>{
+  inp.addEventListener('change',()=>{
+    if(inp.type==='radio') document.querySelectorAll('input[name="'+inp.name+'"]').forEach(r=>r.closest('.opt').classList.toggle('checked',r.checked));
+    else inp.closest('.opt').classList.toggle('checked',inp.checked);
+  });
+});
+
+function condDxTea(){ const e=document.querySelector('input[name="dx_tea"]:checked'); document.getElementById('dx_tea_obs').style.display=(e && e.value==='Autoidentificação')?'block':'none'; }
+function condRisco(){
+  const sim=['risco_ideacao','risco_plano'].some(n=>{
+    const e=document.querySelector('input[name="'+n+'"]:checked');
+    return e && /Sim|atualmente|frequência/i.test(e.value);
+  });
+  document.getElementById('risco_desc_wrap').style.display=sim?'block':'none';
+}
+
+// progresso
+function atualizaProg(){
+  const total=Object.values(ITENS).reduce((a,b)=>a+b.length,0)+8;
+  let feitos=0; const vis={};
+  form.querySelectorAll('input,textarea,select').forEach(el=>{
+    if(el.type==='radio'){ if(el.checked) vis[el.name]=1; }
+    else if(el.value.trim()) vis[el.name]=1;
+  });
+  feitos=Object.keys(vis).length;
+  document.getElementById('prog').style.width=Math.min(100,Math.round(feitos/total*100))+'%';
+}
+
+// auto-save + restauração
+const SKEY='rastreio_tea_comorb';
+function salvar(){
+  const d={};
+  form.querySelectorAll('input,textarea,select').forEach(el=>{
+    if(el.type==='radio'||el.type==='checkbox'){ if(el.checked) d[(el.name||'')+'__'+el.value]=el.value; }
+    else if(el.name) d[el.name]=el.value;
+  });
+  try{ localStorage.setItem(SKEY,JSON.stringify(d)); }catch(e){}
+}
+function restaurar(){
+  let d; try{ d=JSON.parse(localStorage.getItem(SKEY)||'{}'); }catch(e){ return; }
+  if(!d||!Object.keys(d).length) return;
+  form.querySelectorAll('input,textarea,select').forEach(el=>{
+    if(el.type==='radio'||el.type==='checkbox'){
+      if(d[(el.name||'')+'__'+el.value]!==undefined){ el.checked=true; el.dispatchEvent(new Event('change',{bubbles:true})); }
+    } else if(el.name && d[el.name]!==undefined){ el.value=d[el.name]; }
+  });
+  try{ condRisco(); condDxTea(); }catch(e){}
+  atualizaProg();
+}
+form.addEventListener('input',()=>{salvar();atualizaProg();});
+form.addEventListener('change',()=>{salvar();atualizaProg();});
+window.addEventListener('load',restaurar);
+
+// ===== Coleta e cálculo por domínio =====
+const DOMINIOS={
+  d1:{nome:'TDAH / função executiva',sigla:'TDAH'},
+  d2:{nome:'Ansiedade (TAG / social / pânico)',sigla:'Ansiedade'},
+  d3:{nome:'TOC / rituais',sigla:'TOC'},
+  d4:{nome:'Depressão / burnout autista',sigla:'Depressão'},
+  d5:{nome:'Espectro bipolar',sigla:'Bipolar'},
+  d6:{nome:'Desregulação emocional / traços borderline',sigla:'Desregulação'},
+  d7:{nome:'Sensorial / seletividade alimentar (ARFID)',sigla:'Sensorial/ARFID'},
+  d8:{nome:'Alexitimia / interocepção',sigla:'Alexitimia'},
+  d9:{nome:'Evitação patológica de demandas (PDA)',sigla:'PDA'},
+  d10:{nome:'Motor / tiques / sinais catatônicos',sigla:'Motor/Tiques'},
+  d12:{nome:'Sinais catatônicos (travamento/iniciativa)',sigla:'Catatonia'},
+  d13:{nome:'Trauma / TEPT / dissociação',sigla:'Trauma'},
+  d14:{nome:'Disforia de gênero',sigla:'Gênero'},
+  d15:{nome:'Altas habilidades / dupla excepcionalidade (2e)',sigla:'Altas habilidades'},
+  d11:{nome:'Sono',sigla:'Sono'}
+};
+
+function coletar(){
+  const d={};
+  form.querySelectorAll('input[name],textarea[name],select[name]').forEach(el=>{
+    if(el.type==='radio'){ if(el.checked) d[el.name]=el.value; }
+    else if(el.type!=='checkbox'){ if(el.value.trim()) d[el.name]=el.value.trim(); }
+  });
+  return d;
+}
+
+// pontua cada domínio: média dos itens (0-3) -> % e nível
+function pontuar(d){
+  const res={};
+  Object.keys(ITENS).forEach(dom=>{
+    let soma=0,n=0,altos=0;
+    ITENS[dom].forEach(it=>{
+      const v=parseInt(d[it[0]]);
+      if(!isNaN(v)){ soma+=v; n++; if(v>=2) altos++; }
+    });
+    const media=n?soma/n:0;
+    const pct=Math.round(media/3*100);
+    let nivel='baixa';
+    if(pct>=60||altos>=Math.ceil(ITENS[dom].length*0.5)) nivel='alta';
+    else if(pct>=35||altos>=2) nivel='moderada';
+    res[dom]={pct,nivel,respondidos:n,altos};
+  });
+  return res;
+}
+
+function flagRisco(d){
+  const r=[];
+  if(/frequência/i.test(d.risco_ideacao||'')) r.push('IDEAÇÃO FREQUENTE');
+  else if(/atualmente/i.test(d.risco_ideacao||'')) r.push('IDEAÇÃO ATUAL');
+  if(d.risco_plano==='Sim') r.push('PLANO/TENTATIVA');
+  return r.length?' [⚠ '+r.join(' · ')+']':'';
+}
+
+function resumo(d,score){
+  const altos=[],mod=[];
+  Object.keys(DOMINIOS).forEach(dom=>{
+    const s=score[dom];
+    if(s.nivel==='alta') altos.push(DOMINIOS[dom].sigla+' ('+s.pct+'%)');
+    else if(s.nivel==='moderada') mod.push(DOMINIOS[dom].sigla+' ('+s.pct+'%)');
+  });
+  let nivel = (flagRisco(d) || altos.length>=2) ? 'PRIORITÁRIO' : (altos.length>=1||mod.length>=2 ? 'ATENÇÃO' : 'LEVE');
+  const L=[];
+  L.push('RASTREIO COMPLEMENTAR AO TEA — '+nivel);
+  L.push('Paciente: '+d.nome+(d.idade?' · '+d.idade:''));
+  if(d.dx_tea) L.push('Status TEA: '+d.dx_tea);
+  L.push('');
+  L.push('MAPA DE DOMÍNIOS (além do social):');
+  Object.keys(DOMINIOS).forEach(dom=>{
+    const s=score[dom];
+    const marca = s.nivel==='alta'?'🔴':(s.nivel==='moderada'?'🟡':'⚪');
+    L.push('  '+marca+' '+DOMINIOS[dom].nome+': '+s.pct+'% ('+s.nivel+')');
+  });
+  // pistas diferenciais
+  const pistas=[];
+  if(d.toc_natureza && /angústia|dois/i.test(d.toc_natureza) && score.d3.nivel!=='baixa') pistas.push('Repetições com componente de ALÍVIO de angústia → diferenciar TOC de estereotipia/insistência');
+  if(score.d9.nivel!=='baixa') pistas.push('Sinais de PDA (evitação de demanda) — investigar');
+  if(score.d10.altos>=1) pistas.push('Sinais motores/catatônicos — investigar tiques/catatonia subdiagnosticada');
+  if(score.d5.nivel==='alta') pistas.push('Marcadores de espectro bipolar — encaminhar rastreio de humor dedicado');
+  if(score.d6.nivel!=='baixa' && score.d4.nivel!=='baixa') pistas.push('Desregulação emocional + humor — diferenciar borderline de disforia/burnout autista');
+  if(score.d8.nivel==='alta') pistas.push('Alexitimia marcante — pode mascarar depressão/ansiedade no relato');
+  if(score.d12 && score.d12.nivel!=='baixa') pistas.push('Sinais catatônicos — investigar catatonia (subdiagnosticada no TEA; atenção a benzodiazepínico-resposta)');
+  if(score.d13 && score.d13.nivel!=='baixa') pistas.push('Marcadores de trauma/TEPT/dissociação — alta vitimização em autistas; investigar com cuidado');
+  if(score.d14 && score.d14.nivel!=='baixa') pistas.push('Sinais de disforia de gênero — correlação conhecida com TEA; acolher e investigar');
+  if(score.d15 && score.d15.nivel!=='baixa') pistas.push('Sinais de altas habilidades — avaliar dupla excepcionalidade (2e); AH e TEA se mascaram mutuamente');
+  if(score.d15 && score.d15.nivel==='alta' && score.d6 && score.d6.nivel!=='baixa') pistas.push('AH + intensidade emocional — considerar sobre-excitabilidades (Dabrowski), não só psicopatologia');
+  if(d.ah_11 && parseInt(d.ah_11)>0) pistas.push('Perfil ASSINCRÔNICO (pico numa área + dificuldade marcante em outra) — investigar transtorno específico de aprendizagem associado (ex: discalculia)');
+  if(pistas.length){ L.push(''); L.push('PISTAS DIFERENCIAIS:'); pistas.forEach(p=>L.push('  • '+p)); }
+  if(flagRisco(d)){ L.push(''); L.push('🔴 RISCO:'+flagRisco(d)); }
+  if(d.sofrimento){ L.push(''); L.push('Queixa principal (palavras do paciente): '+d.sofrimento); }
+  if(d.cronologia) L.push('Cronologia: '+d.cronologia);
+  return {nivel,texto:L.join('\n')};
+}
+
+// monta texto íntegra
+const ROT_EXTRA={nome:'Nome',nascimento:'Nascimento',idade:'Idade',email_paciente:'E-mail',dx_tea:'Status TEA',dx_tea_obs:'Por que se identifica',toc_natureza:'Natureza das repetições',trauma_livre:'Relato livre (experiências)',risco_ideacao:'⚠ Ideação',risco_plano:'⚠ Plano/tentativa',risco_desc:'⚠ Detalhe',sofrimento:'Queixa principal',cronologia:'Cronologia',medicacoes:'Histórico medicamentoso',extra:'Observações'};
+function montarTexto(d,score){
+  const L=['RASTREIO COMPLEMENTAR AO TEA','Dra. Camila Lino · CRM-SP 274280','Recebido em: '+new Date().toLocaleString('pt-BR'),'========================================'];
+  ['nome','nascimento','idade','dx_tea'].forEach(k=>{ if(d[k]) L.push((ROT_EXTRA[k]||k)+': '+d[k]); });
+  L.push('');
+  L.push('--- PONTUAÇÃO POR DOMÍNIO ---');
+  Object.keys(DOMINIOS).forEach(dom=>{ const s=score[dom]; L.push(DOMINIOS[dom].nome+': '+s.pct+'% ['+s.nivel+'] ('+s.respondidos+' itens)'); });
+  L.push('');
+  L.push('--- RESPOSTAS ITEM A ITEM (0=Nunca 3=Sempre) ---');
+  Object.keys(ITENS).forEach(dom=>{
+    L.push('['+DOMINIOS[dom].sigla+']');
+    ITENS[dom].forEach(it=>{
+      if(d[it[0]]!==undefined){
+        L.push('  '+d[it[0]]+' · '+it[1]);
+        if(d[it[0]+'_fu']) L.push('      ↳ '+d[it[0]+'_fu']);
+      }
+    });
+  });
+  L.push('');
+  L.push('--- OUTRAS RESPOSTAS ---');
+  if(d.dx_tea_obs) L.push('Por que se identifica com TEA: '+d.dx_tea_obs);
+  ['toc_natureza','trauma_livre','sofrimento','cronologia','medicacoes','risco_ideacao','risco_plano','risco_desc','extra'].forEach(k=>{ if(d[k]) L.push((ROT_EXTRA[k]||k)+': '+d[k]); });
+  return L.join('\n');
+}
+
+function gerarPDF(d,score,res){
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:'p',unit:'mm',format:'a4'});
+  const ML=14,PW=182;let y=18;
+  doc.setFillColor(75,26,110);doc.rect(0,0,210,26,'F');
+  doc.setTextColor(255);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text('Rastreio Complementar ao TEA',ML,12);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text('Dra. Camila Lino · Médica · CRM-SP 274280',ML,19);
+  y=34;doc.setTextColor(40,24,64);doc.setFontSize(8);doc.text('Recebido em '+new Date().toLocaleString('pt-BR'),ML,y);y+=7;
+  // resumo
+  const corN = res.nivel==='PRIORITÁRIO'?'#B03A3A':(res.nivel==='ATENÇÃO'?'#C77D00':'#2E7D4F');
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(...hex(corN));
+  doc.text('NÍVEL: '+res.nivel,ML,y);y+=6;
+  doc.setFontSize(8.6);
+  res.texto.split('\n').slice(1).forEach(l=>{
+    if(!l.trim()){y+=2;return;}
+    if(y>282){doc.addPage();y=18;}
+    if(/🔴/.test(l)){doc.setTextColor(176,58,58);doc.setFont('helvetica','bold');}
+    else if(/🟡/.test(l)){doc.setTextColor(199,125,0);doc.setFont('helvetica','normal');}
+    else{doc.setTextColor(40,24,64);doc.setFont('helvetica','normal');}
+    doc.splitTextToSize(l.replace(/[🔴🟡⚪]/g,'•'),PW).forEach(x=>{if(y>282){doc.addPage();y=18;}doc.text(x,ML,y);y+=4.4;});
+  });
+  // íntegra
+  doc.addPage();y=18;
+  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(107,63,160);doc.text('RESPOSTAS NA ÍNTEGRA',ML,y);y+=6;
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(40,24,64);
+  montarTexto(d,score).split('\n').forEach(l=>{
+    doc.splitTextToSize(l,PW).forEach(x=>{if(y>286){doc.addPage();y=18;}doc.text(x,ML,y);y+=4.1;});
+  });
+  return doc;
+}
+function hex(h){const n=parseInt(h.slice(1),16);return [(n>>16)&255,(n>>8)&255,n&255];}
+
+function enviar(){
+  const d=coletar();
+  const status=document.getElementById('status');const btn=document.getElementById('btn');
+  if(!d.nome){ status.style.color='#B03A3A'; status.textContent='Por favor, preencha ao menos o nome.'; return; }
+  btn.disabled=true; status.style.color='#6B3FA0'; status.textContent='Enviando...';
+  const score=pontuar(d); const res=resumo(d,score);
+  const payload={nome:d.nome,email_paciente:d.email_paciente||'',corpo:montarTexto(d,score),flagRisco:flagRisco(d),nivel:res.nivel,resumo:res.texto};
+  fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+  .then(r=>r.json().catch(()=>({ok:true}))).then(()=>{
+    status.style.color='#2E7D4F'; status.textContent='✓ Respostas enviadas com sucesso para a Dra. Camila.';
+    try{ gerarPDF(d,score,res).save('Rastreio_TEA_'+d.nome.replace(/\s+/g,'_')+'.pdf'); }catch(e){}
+    try{ localStorage.removeItem(SKEY); }catch(e){}
+    btn.textContent='Enviado ✓';
+  }).catch(()=>{ status.style.color='#B03A3A'; status.textContent='Não foi possível enviar. Verifique a conexão e tente novamente.'; btn.disabled=false; });
+}
+</script>
+</body>
+</html>
