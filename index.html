@@ -322,11 +322,15 @@ textarea{resize:vertical;min-height:58px}
         <label class="opt"><input type="radio" name="risco_plano" value="Prefiro conversar na consulta" onchange="condRisco()"> Prefiro conversar na consulta</label>
       </div>
     </div>
+    <div class="q" id="risco_passado_wrap" style="display:none;border:none">
+      <label class="q-l">Se quiser, conte um pouco sobre o que aconteceu no passado. (opcional)</label>
+      <textarea name="risco_passado" placeholder="Quando foi? O que aconteceu? Como você está hoje em relação a isso?"></textarea>
+    </div>
     <div class="q" id="risco_desc_wrap" style="display:none;border:none">
       <label class="q-l">Se se sentir confortável, conte um pouco mais (não é obrigatório).</label>
       <textarea name="risco_desc" placeholder="Como? Quando? Com que intensidade?"></textarea>
     </div>
-    <div class="alerta">⚠️ Em caso de risco imediato, não aguarde a consulta. Procure uma UPA ou pronto-socorro e fique acompanhado. CVV: 188 (24h, gratuito).</div>
+    <div class="alerta" id="risco_alerta" style="display:none">⚠️ Em caso de risco imediato, não aguarde a consulta. Procure uma UPA ou pronto-socorro e fique acompanhado. CVV: 188 (24h, gratuito).</div>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -643,11 +647,21 @@ function condGenero(){
   document.getElementById('genero_livre').style.display=(e&&e.value==='Não-binário/Outro')?'block':'none';
 }
 function condRisco(){
-  const sim=['risco_ideacao','risco_plano'].some(n=>{
-    const e=document.querySelector(`input[name="${n}"]:checked`);
-    return e&&/Sim|atualmente|frequência/i.test(e.value);
-  });
-  document.getElementById('risco_desc_wrap').style.display=sim?'block':'none';
+  const ideacao=document.querySelector('input[name="risco_ideacao"]:checked');
+  const plano=document.querySelector('input[name="risco_plano"]:checked');
+  const valIdeacao=ideacao?ideacao.value:'';
+  const valPlano=plano?plano.value:'';
+
+  const ePassado=/passado/i.test(valIdeacao)&&!/atualmente|frequência/i.test(valIdeacao);
+  const ePresente=/atualmente|frequência/i.test(valIdeacao);
+  const temPlano=/Sim/i.test(valPlano);
+
+  // campo de narrativa passado
+  document.getElementById('risco_passado_wrap').style.display=ePassado?'block':'none';
+  // campo de detalhe presente / plano
+  document.getElementById('risco_desc_wrap').style.display=(ePresente||temPlano)?'block':'none';
+  // alerta de risco só aparece se presente ou plano
+  document.getElementById('risco_alerta').style.display=(ePresente||temPlano)?'block':'none';
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -764,6 +778,7 @@ function flagRisco(d){
   const r=[];
   if(/frequência/i.test(d.risco_ideacao||''))r.push('IDEAÇÃO FREQUENTE');
   else if(/atualmente/i.test(d.risco_ideacao||''))r.push('IDEAÇÃO ATUAL');
+  else if(/passado/i.test(d.risco_ideacao||''))r.push('IDEAÇÃO PRÉVIA (passado)');
   if(d.risco_plano==='Sim')r.push('PLANO/TENTATIVA');
   return r.length?' [⚠ '+r.join(' · ')+']':'';
 }
@@ -862,7 +877,7 @@ function resumo(d,score){
 // ═══════════════════════════════════════════════════════════════
 // TEXTO ÍNTEGRA
 // ═══════════════════════════════════════════════════════════════
-const ROT_EXTRA={nome:'Nome',nascimento:'Nascimento',idade:'Idade',genero_id:'Gênero',genero_livre:'Gênero (especificado)',email_paciente:'E-mail',dx_tea:'Status TEA',dx_tea_obs:'Por que se identifica',toc_natureza:'Natureza das repetições',trauma_livre:'Relato livre',risco_ideacao:'⚠ Ideação',risco_plano:'⚠ Plano/tentativa',risco_desc:'⚠ Detalhe risco',sofrimento:'Queixa principal',cronologia:'Cronologia',medicacoes:'Histórico medicamentoso',extra:'Observações adicionais'};
+const ROT_EXTRA={nome:'Nome',nascimento:'Nascimento',idade:'Idade',genero_id:'Gênero',genero_livre:'Gênero (especificado)',email_paciente:'E-mail',dx_tea:'Status TEA',dx_tea_obs:'Por que se identifica',toc_natureza:'Natureza das repetições',trauma_livre:'Relato livre',risco_ideacao:'⚠ Ideação',risco_passado:'⚠ Ideação prévia (relato)',risco_plano:'⚠ Plano/tentativa',risco_desc:'⚠ Detalhe risco',sofrimento:'Queixa principal',cronologia:'Cronologia',medicacoes:'Histórico medicamentoso',extra:'Observações adicionais'};
 
 function montarTexto(d,score){
   const L=['RASTREIO COMPLEMENTAR AO TEA','Dra. Camila Lino · Médica · CRM-SP 274280','Recebido em: '+new Date().toLocaleString('pt-BR'),''];
@@ -897,7 +912,7 @@ function montarTexto(d,score){
   });
 
   L.push('');L.push('--- OUTRAS RESPOSTAS ---');
-  ['dx_tea_obs','toc_natureza','trauma_livre','sofrimento','cronologia','medicacoes','risco_ideacao','risco_plano','risco_desc','extra'].forEach(k=>{if(d[k])L.push((ROT_EXTRA[k]||k)+': '+d[k]);});
+  ['dx_tea_obs','toc_natureza','trauma_livre','sofrimento','cronologia','medicacoes','risco_ideacao','risco_passado','risco_plano','risco_desc','extra'].forEach(k=>{if(d[k])L.push((ROT_EXTRA[k]||k)+': '+d[k]);});
   return L.join('\n');
 }
 
